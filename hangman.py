@@ -8,7 +8,6 @@ count = 3
 guessed = []
 viktory = ''
 
-
 def print_word(secretword, guessed_letters):
     current_letters = []
     for i in secretWord:
