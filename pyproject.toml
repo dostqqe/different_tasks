@@ -1,0 +1,53 @@
+[tool.poetry]
+name = "different-tasks"
+version = "0.1.0"
+description = ""
+authors = []
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.11.2"
+mypy = "^1.15.0"
+black = "^25.1.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 100
+target-version = ["py312"]
+skip-magic-trailing-comma = true
+
+[tool.mypy]
+ignore_missing_imports = true
+warn_unused_ignores = true
+allow_redefinition = true
+strict_equality = true
+disallow_incomplete_defs = true
+
+[tool.ruff]
+line-length = 100
+indent-width = 4
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "T201", # Checks for print statements.
+    "RUF001", # Checks for ambiguous Unicode characters in strings.
+    "RUF002", # Checks for ambiguous Unicode characters in docstrings.
+    "RUF003", # Checks for ambiguous Unicode characters in comments.
+    "D100", # Checks for undocumented public module definitions.
+    "D104", # Checks for undocumented public package definitions.
+    "D105", # Checks for undocumented magic method definitions.
+    "D107", # Checks for public `__init__` method definitions that are missing docstrings.
+    "D203", # Checks for docstrings on class definitions that are not preceded by a blank line.
+    "D213", # Checks for docstring summary lines that are not positioned on the second physical line of the docstring.
+]
+
+[tool.ruff.lint.isort]
+split-on-trailing-comma = false
