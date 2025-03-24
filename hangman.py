@@ -1,16 +1,16 @@
 from random import choice
 
-alphabet = ["а","б","в","г","д","е","ё","ж","з","и","й","к","л","м","н","о",
-            "п","р","с","т","у","ф","х","ц","ч","ш","щ","ъ","ы","ь","э","ю","я"]
-listOfWords = ['плавание', 'бег', 'бокс', 'велоспорт', 'волейбол', 'коньки']
-secretWord = choice(listOfWords)
-count = 3
+alphabet = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя"
+list_of_words = ["плавание", "бег", "бокс", "велоспорт", "волейбол", "коньки"]
+secret_word = choice(list_of_words)
+attempts_limit = 3
+counter = attempts_limit
 guessed = []
-viktory = ''
+word_is_guessed = ""
 
-def print_word(secretword, guessed_letters):
+def print_word(guessed_letters: str) -> str:
     current_letters = []
-    for i in secretWord:
+    for i in secret_word:
         if i in guessed_letters:
             current_letters.append(i)
         else:
@@ -19,28 +19,30 @@ def print_word(secretword, guessed_letters):
 
 
 print('Добро пожаловать в виселицу на тему "виды спорта", потому что мы за здоровый образ жизни!')
-print("У вас будет 3 попытки угадать секретное слово. Удачи!!")
-print("Слово:", '_' * len(secretWord))
+print(f"У вас будет {attempts_limit} попытки угадать секретное слово. Удачи!!")
+print("Слово:", '_' * len(secret_word))
 
-while count > 0 and viktory != secretWord:
+while counter > 0 and word_is_guessed != secret_word:
     letter = input("Введите букву:")
     if letter not in alphabet:
-        "Введите БУКВУ"
-    elif letter in guessed:
+        print("Введите БУКВУ")
+        continue    
+    if letter in guessed:
         print("Вы уже угадали эту букву")
-    elif letter in secretWord:
-        for i in range(len(secretWord)):
-            if secretWord[i] == letter:
+        continue
+    if letter in range(len(secret_word)):
+        for i in secret_word:
+            if secret_word[i] == letter:
                 guessed.append(letter)
                 print("Верно, эта буква на ", i+1, "месте")
-                print(print_word(secretWord, guessed))
-                viktory = print_word(secretWord, guessed)
+                print(print_word(guessed))
+                word_is_guessed = print_word(guessed)
     else:
-        count -=  1
-        if count == 2:
-            print("У вас осталось 2 попытки")
-        else: print("У вас осталась одна попытка")
+        counter -=  1
+        print(f"Количество оставшихся попыток: {counter}")
 
-if viktory == secretWord:
+if word_is_guessed == secret_word:
     print("Вы угадали слово")
-elif count == 0: print("Вы проиграли. Ответ:", secretWord)
+    continue
+if count == 0: 
+    print("Вы проиграли. Ответ:", secret_word)
