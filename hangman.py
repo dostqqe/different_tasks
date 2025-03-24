@@ -43,6 +43,5 @@ while counter > 0 and word_is_guessed != secret_word:
 
 if word_is_guessed == secret_word:
     print("Вы угадали слово")
-    continue
-if count == 0: 
+if counter == 0: 
     print("Вы проиграли. Ответ:", secret_word)
