@@ -1,10 +1,8 @@
 from random import choice
 
 alphabet = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя"
-list_of_words = ["плавание", "бег", "бокс", "велоспорт", "волейбол", "коньки"]
-attempts_limit = 3
 
-def choose_random_word(words):
+def choose_random_word(words: list):
     return choice(words)
 
 def hello(attempts: int, our_word: str) -> str:
@@ -43,7 +41,7 @@ def play_game(secret_word: str, attempts_limit: int):
     guessed = []
     word_is_guessed = ""
 
-    hello(attempts_limit, secret_word)
+    hello(3, secret_word)
 
     while counter > 0 and word_is_guessed != secret_word:
         letter = get_letter()
@@ -66,8 +64,8 @@ def play_game(secret_word: str, attempts_limit: int):
         print("Поздравляем! Вы угадали слово:", secret_word)
 
 def func():
-    secret_word = choose_random_word(list_of_words)
-    play_game(secret_word, attempts_limit)
+    secret_word = choose_random_word(["плавание", "бег", "бокс", "велоспорт", "волейбол", "коньки"])
+    play_game(secret_word, 3)
 
 if __name__ == "__main__":
     func()
