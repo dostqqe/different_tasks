@@ -21,7 +21,7 @@ def print_word(secret: str, guessed_letters: str) -> str:
 
 def get_letter() -> str:
     while True:
-        letter = input("Введите букву:").lower()  # Приводим к нижнему регистру
+        letter = input("Введите букву:")
         if letter not in alphabet:
             print("Введите БУКВУ, пожалуйста.")
         else:
