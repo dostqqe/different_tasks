@@ -3,9 +3,8 @@ from random import choice
 alphabet = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя"
 
 def choose_random_word():
-    file = open("input.txt", "r")
-    words = file.read().split()
-    file.close()
+    with open("input.txt", "r") as file:
+        words = file.read().split()
     return choice(words)
 
 def hello(attempts: int, our_word: str) -> str:
