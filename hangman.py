@@ -2,7 +2,9 @@ from random import choice
 
 alphabet = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя"
 
-def choose_random_word(words: list):
+def choose_random_word():
+    with open("input.txt", "r") as file:
+        words = file.read().split()
     return choice(words)
 
 def hello(attempts: int, our_word: str) -> str:
@@ -64,7 +66,7 @@ def play_game(secret_word: str, attempts_limit: int):
         print("Поздравляем! Вы угадали слово:", secret_word)
 
 def func():
-    secret_word = choose_random_word(["плавание", "бег", "бокс", "велоспорт", "волейбол", "коньки"])
+    secret_word = choose_random_word()
     play_game(secret_word, 3)
 
 if __name__ == "__main__":
