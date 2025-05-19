@@ -2,15 +2,27 @@ from random import choice
 
 alphabet = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя"
 
-def choose_random_word():
-    with open("input.txt", "r") as file:
-        words = file.read().split()
-    return choice(words)
+class WordChooser():
+    #чтобы можно было любой файл
+    def __init__(self, filename, attempts):
+        self.filename = filename
 
-def hello(attempts: int, our_word: str) -> str:
-    print('Добро пожаловать в виселицу на тему "виды спорта", потому что мы за здоровый образ жизни!')
-    print(f"У вас будет {attempts} попытки угадать секретное слово. Удачи!!")
-    print("Слово:", '_' * len(our_word))
+
+    def choose_random_word(self) -> str:
+        with open(self.filename, "r", encoding="utf-8") as file:
+            words = file.read().split()
+        return choice(words)
+
+class NewGame():
+    def __init__(self, attempts, secret_word):
+        self.attempts = attempts
+        self.secret_word = secret_word
+
+    def hello(self) -> str:
+        print('Добро пожаловать в виселицу на тему "виды спорта", потому что мы за здоровый образ жизни!')
+        print(f"У вас будет {self.attempts} попытки угадать секретное слово. Удачи!!")
+        print("Слово:", '_' * len(self.secret_word))
+        return self.secret_word
 
 def print_word(secret: str, guessed_letters: str) -> str:
     current_letters = []
@@ -66,7 +78,10 @@ def play_game(secret_word: str, attempts_limit: int):
         print("Поздравляем! Вы угадали слово:", secret_word)
 
 def func():
-    secret_word = choose_random_word()
+    chooser = WordChooser("input.txt", 3)
+    secret_word = chooser.choose_random_word()
+    new_game = NewGame(3, secret_word=secret_word)
+    game = new_game.hello()
     play_game(secret_word, 3)
 
 if __name__ == "__main__":
