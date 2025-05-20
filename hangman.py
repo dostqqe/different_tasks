@@ -2,7 +2,6 @@ from random import choice
 
 
 class WordChooser():
-    #чтобы можно было любой файл
     def __init__(self, filename, attempts):
         self.filename = filename
 
