@@ -1,12 +1,10 @@
 from random import choice
 
-alphabet = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя"
 
 class WordChooser():
     #чтобы можно было любой файл
     def __init__(self, filename, attempts):
         self.filename = filename
-
 
     def choose_random_word(self) -> str:
         with open(self.filename, "r", encoding="utf-8") as file:
@@ -24,22 +22,32 @@ class NewGame():
         print("Слово:", '_' * len(self.secret_word))
         return self.secret_word
 
-def print_word(secret: str, guessed_letters: str) -> str:
-    current_letters = []
-    for i in secret:
-        if i in guessed_letters:
-            current_letters.append(i)
-        else:
-            current_letters.append("*")
-    return "".join(current_letters)
+class GetLetter():
+    def __init__(self, alphabet):
+        self.alphabet = alphabet
 
-def get_letter() -> str:
-    while True:
-        letter = input("Введите букву:")
-        if letter not in alphabet:
-            print("Введите БУКВУ, пожалуйста.")
-        else:
-            return letter
+    def get_letter(self) -> str:
+        while True:
+            letter = input("Введите букву: ")
+            if letter not in self.alphabet:
+                print("Введите БУКВУ, пожалуйста.")
+            else:
+                return letter
+
+class PrintWord():
+    def __init__(self, secret_word, guessed_letters):
+        self.secret_word = secret_word
+        self.guessed_letters = guessed_letters
+
+    def print_word(self) -> str:
+        current_letters = []
+        for i in self.secret_word:
+            if i in self.guessed_letters:
+                current_letters.append(i)
+            else:
+                current_letters.append("*")
+        return "".join(current_letters)
+
 
 def check_letter_in_word(secret: str, guessed: list, letter: str) -> bool:
     if letter in secret:
@@ -55,16 +63,16 @@ def play_game(secret_word: str, attempts_limit: int):
     guessed = []
     word_is_guessed = ""
 
-    hello(3, secret_word)
-
     while counter > 0 and word_is_guessed != secret_word:
-        letter = get_letter()
+        letter = GetLetter("абвгдеёжзийклмнопрстуфхцчшщъыьэюя")
+        get_letter = letter.get_letter()
 
-        if letter in guessed:
+        if get_letter in guessed:
             print("Вы уже угадали эту букву.")
             continue
-        if check_letter_in_word(secret_word, guessed, letter):
-            current_word = print_word(secret_word, "".join(guessed))
+        if check_letter_in_word(secret_word, guessed, get_letter):
+            made_word = PrintWord(secret_word, guessed)
+            current_word = made_word.print_word()
             print(current_word)
             word_is_guessed = current_word
         else:
