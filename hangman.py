@@ -1,29 +1,75 @@
 from random import choice
 
 
-class WordChooser:
-    def __init__(self, filename: str) -> None:
+class Main:
+    def __init__(self, filename: str, attempts: int):
         self.filename = filename
+        self.games = {}
+        self.next_id = 1
+        self._secret_word = None
+        self.attempts = attempts
 
-    def choose_random_word(self) -> str:
+
+    def choose_random_word(self, player: str) -> int:
+        for game in self.games.values():
+            if game["player"] == player and game["status"] == "active":
+                raise ValueError(f"У игрока {player} уже есть активная игра!")
+
         with open(self.filename, "r", encoding="utf-8") as file:
             words = file.read().split()
-        return choice(words)
+            game_id = self.next_id
+
+        self.games[game_id] = {
+            "word": choice(words),
+            "player": player,
+            "attempts": self.attempts,
+            "status": "active"
+        }
+
+        self._secret_word = self.games[game_id]["word"]
+        self.next_id += 1
+        return game_id
 
 
-class NewGame:
-    def __init__(self, attempts: int, secret_word: str) -> None:
-        self.attempts = attempts
-        self.secret_word = secret_word
+    @property
+    def get_word(self) -> str:
+        return self._secret_word
 
-    def hello(self) -> str:
+
+    def get_game(self, game_id: int, player:str) -> dict | None:
+        game = self.games.get(game_id)
+        if not game:
+            print("Игра не найдена!")
+            return None
+        if game["player"] != player:
+            print("Это не ваша игра!")
+            return None
+        return game
+
+
+
+    def attempts(self, game_id: int, player: str, word: str) -> str:
+        game = self.get_game(game_id, player)
+        if game["status"] != "active":
+            raise ValueError("Игра уже завершена!")
+        if word == game["word"]:
+            game["status"] = "won"
+            return "Вы угадали!"
+        elif game["attempts"] <= 0:
+            game["status"] = "lost"
+            return f"Попытки кончились! Слово: {game['word']}"
+        else:
+            return f"Неверно! Осталось попыток: {game['attempts']}"
+
+
+    def start_game(self):
         print(
             'Добро пожаловать в виселицу на тему "виды спорта", '
             'потому что мы за здоровый образ жизни!'
         )
         print(f"У вас будет {self.attempts} попытки угадать секретное слово. Удачи!!")
-        print("Слово:", "_" * len(self.secret_word))
-        return self.secret_word
+        print("Слово:", "_" * len(self._secret_word))
+        play_game(self._secret_word, self.attempts)
 
 
 class GetLetter:
@@ -93,11 +139,13 @@ def play_game(secret_word: str, attempts_limit: int) -> None:
 
 
 def func() -> None:
-    chooser = WordChooser("input.txt")
-    secret_word = chooser.choose_random_word()
-    new_game = NewGame(3, secret_word=secret_word)
-    game = new_game.hello()
-    play_game(secret_word, 3)
+
+    new_game = Main("input.txt", 3)
+    new_game.choose_random_word("Admin")
+    data = new_game.get_game(1, "Admin")
+    if data is None:
+        return
+    new_game.start_game()
 
 
 if __name__ == "__main__":
