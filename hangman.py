@@ -27,7 +27,6 @@ class Main:
             "attempts": self.attempts,
             "status": "active"
         }
-        self.secret_word = self.games[game_id]["word"]
 
         return game_id
 
@@ -42,14 +41,14 @@ class Main:
 
 
     def start_game(self, player: str, game_id: int):
+        secret_word = self.games[game_id]["word"]
         print(
             'Добро пожаловать в виселицу на тему "виды спорта", '
             'потому что мы за здоровый образ жизни!'
         )
         print(f"У вас будет {self.attempts} попытки угадать секретное слово. Удачи!!")
-        print("Слово:", "_" * len(self.secret_word))
+        print("Слово:", "_" * len(secret_word))
 
-        secret_word = self.secret_word
         attempts = self.attempts
         guessed = []
         word_is_guessed = ""
@@ -72,7 +71,7 @@ class Main:
                 guessed.append(letter)
                 positions = [i + 1 for i, l in enumerate(secret_word) if l == letter]
                 print(f"Верно, буква '{letter}' на позициях: {', '.join(map(str, positions))}")
-                current_word = "".join([ch if ch in guessed else "*" for ch in self.secret_word])
+                current_word = "".join([ch if ch in guessed else "*" for ch in secret_word])
                 print(current_word)
                 word_is_guessed = current_word
             else:
