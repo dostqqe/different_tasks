@@ -8,7 +8,6 @@ class Main:
         self.games = {}
         self.attempts = attempts
         self.alphabet = alphabet
-        self.secret_word = None
 
 
     def choose_random_word(self, player: str) -> int:
@@ -19,7 +18,7 @@ class Main:
         with open(self.filename, "r", encoding="utf-8") as file:
             words = file.read().split()
 
-        game_id = int(uuid.uuid4().int)
+        game_id = uuid.uuid4()
 
         self.games[game_id] = {
             "game_id": game_id,
@@ -94,7 +93,7 @@ def func() -> None:
     player = input("Введите имя игрока: ").strip()
     game_id = game.choose_random_word(player)
     data = game.get_game(game_id, player)
-    #print(game.get_game(game_id, player="Susan")) проверка
+    #print(game.get_game(game_id, player="Susan"))
 
 
     if data is None:
