@@ -40,7 +40,7 @@ class Main:
         return game
 
 
-    def start_game(self, player: str, game_id: int):
+        def attempt_to_guess(self, player: str, game_id: int, letter: str):
         secret_word = self.games[game_id]["word"]
         print(
             'Добро пожаловать в виселицу на тему "виды спорта", '
@@ -57,7 +57,6 @@ class Main:
 
         while counter > 0 and word_is_guessed != secret_word:
             while True:
-                letter = input("Введите букву: ").lower()
                 if letter not in self.alphabet:
                     print("Введите БУКВУ, пожалуйста.")
                 else:
@@ -92,12 +91,15 @@ def func() -> None:
     player = input("Введите имя игрока: ").strip()
     game_id = game.choose_random_word(player)
     data = game.get_game(game_id, player)
+
     #print(game.get_game(game_id, player="Susan"))
 
 
     if data is None:
         return
-    game.start_game(player, game_id)
+    letter = input("Введите букву: ").lower()
+    game.attempt_to_guess(player, game_id, letter)
+
 
 
 if __name__ == "__main__":
