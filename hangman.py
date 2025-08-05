@@ -9,7 +9,6 @@ class Main:
         self.attempts = attempts
         self.alphabet = alphabet
 
-
     def choose_random_word(self, player: str) -> uuid.UUID:
         for game in self.games.values():
             if game["player"] == player and game["status"] == "active":
@@ -26,11 +25,11 @@ class Main:
             "player": player,
             "attempts": self.attempts,
             "guessed_letters": [],
-            "status": "active"
+            "guessed_word": [],
+            "status": "active",
         }
 
         return game_id
-
 
     def get_game(self, game_id: uuid.UUID, player: str) -> dict:
         game = self.games.get(game_id)
@@ -40,8 +39,9 @@ class Main:
             raise ValueError("Это не ваша игра!")
         return game
 
-
-    def attempt_to_guess(self, letter: str, game_id: uuid.UUID, player):#    letter, game_id, player
+    def attempt_to_guess(
+        self, letter: str, game_id: uuid.UUID, player
+    ):  #    letter, game_id, player
         game = self.get_game(game_id, player)
         if game["status"] != "active":
             return "Игра уже завершена"
@@ -55,7 +55,9 @@ class Main:
             game["guessed_letters"].append(letter)
             positions = [i + 1 for i, l in enumerate(secret_word) if l == letter]
             message = f"Верно, буква '{letter}' на позициях: {', '.join(map(str, positions))}"
-            current_word = "".join([ch if ch in game["guessed_letters"] else "*" for ch in secret_word])
+            current_word = "".join(
+                [ch if ch in game["guessed_letters"] else "*" for ch in secret_word]
+            )
             if current_word == game["word"]:
                 game["status"] = "won"
                 return f"Поздравляем! Вы угадали слово: {secret_word}"
@@ -63,12 +65,15 @@ class Main:
         else:
             game["attempts"] -= 1
             message = f"Не угадали. Количество оставшихся попыток: {game["attempts"]}"
-            current_word = "".join([ch if ch in game["guessed_letters"] else "*" for ch in secret_word])
+            current_word = "".join(
+                [ch if ch in game["guessed_letters"] else "*" for ch in secret_word]
+            )
 
             if game["attempts"] == 0:
                 game["status"] = "lost"
                 return f"Вы проиграли. Ответ: {game["word"]}"
             return f"{message}\n{current_word}"
+
 
 def func(instance):
     player = input("Введите имя игрока: ").strip()
@@ -82,7 +87,7 @@ def func(instance):
 
     print(
         'Добро пожаловать в виселицу на тему "виды спорта", '
-        'потому что мы за здоровый образ жизни!'
+        "потому что мы за здоровый образ жизни!"
     )
     print(f"У вас будет {instance.attempts} попытки угадать секретное слово. Удачи!!")
     print("Слово:", "*" * len(secret_word))
