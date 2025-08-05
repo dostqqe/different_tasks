@@ -1,104 +1,112 @@
-from random import choice
 import uuid
+from random import choice
 
 
 class Main:
-    def __init__(self, filename: str, attempts: int, alphabet: str):
+    """class."""
+
+    def __init__(self, filename: str, attempts: int, alphabet: str) -> None:
         self.filename = filename
         self.games = {}
         self.attempts = attempts
         self.alphabet = alphabet
 
-
-    def choose_random_word(self, player: str) -> int:
+    def choose_random_word(self, player: str) -> uuid.UUID:
+        """выбирает случайное слово для игрока."""
         for game in self.games.values():
             if game["player"] == player and game["status"] == "active":
-                raise ValueError(f"У игрока {player} уже есть активная игра!")
+                error_msg = f"У игрока {player} уже есть активная игра!"
+                raise ValueError(error_msg)
 
-        with open(self.filename, "r", encoding="utf-8") as file:
+        with open(self.filename, encoding="utf-8") as file:  # noqa: PTH123
             words = file.read().split()
 
         game_id = uuid.uuid4()
 
         self.games[game_id] = {
             "game_id": game_id,
-            "word": choice(words),
+            "word": choice(words),  # noqa: S311
             "player": player,
             "attempts": self.attempts,
-            "status": "active"
+            "guessed_letters": [],
+            "guessed_word": [],
+            "status": "active",
         }
 
         return game_id
 
-
-    def get_game(self, game_id: int, player: str) -> dict:
+    def get_game(self, game_id: uuid.UUID, player: str) -> dict:
+        """получение игры."""
         game = self.games.get(game_id)
         if not game:
-            raise ValueError("Игра не найдена")
+            error_msg = "Игра не найдена"
+            raise ValueError(error_msg)
         if game["player"] != player:
-            raise ValueError("Это не ваша игра!")
+            error_msg = "Это не ваша игра!"
+            raise ValueError(error_msg)
         return game
 
+    def attempt_to_guess(  # noqa: PLR0911
+        self, letter: str, game_id: uuid.UUID, player: str,
+    ) -> str:  #    letter, game_id, player
+        """попытка угадывания."""
+        game = self.get_game(game_id, player)
+        if game["status"] != "active":
+            return "Игра уже завершена"
+        if letter not in game_instance.alphabet:
+            return "Введите БУКВУ"
+        if letter in game["guessed_letters"]:
+            return "Вы уже угадали эту букву"
 
-    def start_game(self, player: str, game_id: int):
-        secret_word = self.games[game_id]["word"]
-        print(
-            'Добро пожаловать в виселицу на тему "виды спорта", '
-            'потому что мы за здоровый образ жизни!'
-        )
-        print(f"У вас будет {self.attempts} попытки угадать секретное слово. Удачи!!")
-        print("Слово:", "_" * len(secret_word))
+        secret_word = game["word"]
+        if letter in secret_word:
+            game["guessed_letters"].append(letter)
+            positions = [i + 1 for i, char in enumerate(secret_word) if char == letter]
+            message = f"Верно, буква '{letter}' на позициях: {', '.join(map(str, positions))}"
+            current_word = "".join(
+                [ch if ch in game["guessed_letters"] else "*" for ch in secret_word],
+            )
+            if current_word == game["word"]:
+                game["status"] = "won"
+                return f"Поздравляем! Вы угадали слово: {secret_word}"
+            return f"{message}\n{current_word}"
+        game["attempts"] -= 1
+        message = f"Не угадали. Количество оставшихся попыток: {game["attempts"]}"
+        current_word = "".join([ch if ch in game["guessed_letters"] else "*" for ch in secret_word])
 
-        attempts = self.attempts
-        guessed = []
-        word_is_guessed = ""
-        counter = attempts
-
-
-        while counter > 0 and word_is_guessed != secret_word:
-            while True:
-                letter = input("Введите букву: ").lower()
-                if letter not in self.alphabet:
-                    print("Введите БУКВУ, пожалуйста.")
-                else:
-                    break
-
-            if letter in guessed:
-                print("Вы уже угадали эту букву.")
-                continue
-
-            if letter in secret_word:
-                guessed.append(letter)
-                positions = [i + 1 for i, l in enumerate(secret_word) if l == letter]
-                print(f"Верно, буква '{letter}' на позициях: {', '.join(map(str, positions))}")
-                current_word = "".join([ch if ch in guessed else "*" for ch in secret_word])
-                print(current_word)
-                word_is_guessed = current_word
-            else:
-                counter -= 1
-                print(f"Не угадали. Количество оставшихся попыток: {counter}")
-                if counter == 0:
-                    print("Вы проиграли. Ответ:", secret_word)
-                    self.games[game_id]["status"] = "lost"
-                    return
-
-        if word_is_guessed == secret_word:
-            print("Поздравляем! Вы угадали слово:", secret_word)
-            self.games[game_id]["status"] = "won"
+        if game["attempts"] == 0:
+            game["status"] = "lost"
+            return f"Вы проиграли. Ответ: {game["word"]}"
+        return f"{message}\n{current_word}"
 
 
-def func() -> None:
-    game = Main("input.txt", 3, "абвгдеёжзийклмнопрстуфхцчшщъыьэюя")
+def func(instance: "Main") -> None:
+    """Func."""
     player = input("Введите имя игрока: ").strip()
-    game_id = game.choose_random_word(player)
-    data = game.get_game(game_id, player)
-    #print(game.get_game(game_id, player="Susan"))
-
-
-    if data is None:
+    game_id = instance.choose_random_word(player)
+    secret_word = instance.games[game_id]["word"]
+    try:
+        instance.get_game(game_id, player)
+    except ValueError as e:
+        print(e)
         return
-    game.start_game(player, game_id)
+
+    print(
+        'Добро пожаловать в виселицу на тему "виды спорта", '
+        "потому что мы за здоровый образ жизни!",
+    )
+    print(f"У вас будет {instance.attempts} попытки угадать секретное слово. Удачи!!")
+    print("Слово:", "*" * len(secret_word))
+
+    while True:
+        letter = input("Введите букву: ").lower()
+        result = instance.attempt_to_guess(letter, game_id, player)
+        print(result)
+        game = instance.games[game_id]
+        if game["status"] in ("won", "lost"):
+            break
 
 
 if __name__ == "__main__":
-    func()
+    game_instance = Main("input.txt", 3, "абвгдеёжзийклмнопрстуфхцчшщъыьэюя")
+    func(game_instance)
