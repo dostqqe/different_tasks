@@ -12,7 +12,7 @@ class Main:
         self.alphabet = alphabet
 
     def choose_random_word(self, player: str) -> uuid.UUID:
-        """ "выбирает случайное слово для игрока."""
+        """выбирает случайное слово для игрока."""
         for game in self.games.values():
             if game["player"] == player and game["status"] == "active":
                 error_msg = f"У игрока {player} уже есть активная игра!"
@@ -36,7 +36,7 @@ class Main:
         return game_id
 
     def get_game(self, game_id: uuid.UUID, player: str) -> dict:
-        """ "получение игры."""
+        """получение игры."""
         game = self.games.get(game_id)
         if not game:
             error_msg = "Игра не найдена"
@@ -47,9 +47,9 @@ class Main:
         return game
 
     def attempt_to_guess(  # noqa: PLR0911
-        self, letter: str, game_id: uuid.UUID, player: str
+        self, letter: str, game_id: uuid.UUID, player: str,
     ) -> str:  #    letter, game_id, player
-        """ "попытка угадывания."""
+        """попытка угадывания."""
         game = self.get_game(game_id, player)
         if game["status"] != "active":
             return "Игра уже завершена"
@@ -64,7 +64,7 @@ class Main:
             positions = [i + 1 for i, char in enumerate(secret_word) if char == letter]
             message = f"Верно, буква '{letter}' на позициях: {', '.join(map(str, positions))}"
             current_word = "".join(
-                [ch if ch in game["guessed_letters"] else "*" for ch in secret_word]
+                [ch if ch in game["guessed_letters"] else "*" for ch in secret_word],
             )
             if current_word == game["word"]:
                 game["status"] = "won"
@@ -81,7 +81,7 @@ class Main:
 
 
 def func(instance: "Main") -> None:
-    """ "func."""
+    """Func."""
     player = input("Введите имя игрока: ").strip()
     game_id = instance.choose_random_word(player)
     secret_word = instance.games[game_id]["word"]
@@ -93,7 +93,7 @@ def func(instance: "Main") -> None:
 
     print(
         'Добро пожаловать в виселицу на тему "виды спорта", '
-        "потому что мы за здоровый образ жизни!"
+        "потому что мы за здоровый образ жизни!",
     )
     print(f"У вас будет {instance.attempts} попытки угадать секретное слово. Удачи!!")
     print("Слово:", "*" * len(secret_word))
